@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "../config/config.php";
+require "config/config.php";
 if($_POST){
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -15,7 +15,7 @@ if($_POST){
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['logged_in'] = time();
-        $_SESSION['role'] = 1;
+        $_SESSION['role'] == 0;
         header('location:index.php');
       } 
     }
@@ -33,16 +33,16 @@ if($_POST){
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="dist/css/adminlte.min.css">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="../index2.html"><b>Blog</b>Admin</a>
+    <a href="../index2.html"><b>Blog</b></a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -67,8 +67,9 @@ if($_POST){
         </div>
         <div class="row">
           <!-- /.col -->
-          <div class="col-4">
+          <div class="container">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <a href="register.php" class="btn btn-secondary btn-block" type="button">Register</a>
           </div>
           <!-- /.col -->
         </div>
@@ -80,10 +81,10 @@ if($_POST){
 <!-- /.login-box -->
 
 <!-- jQuery -->
-<script src="../plugins/jquery/jquery.min.js"></script>
+<script src="plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+<script src="dist/js/adminlte.min.js"></script>
 </body>
 </html>

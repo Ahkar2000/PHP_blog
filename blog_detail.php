@@ -1,10 +1,48 @@
+<?php
+session_start();
+require "config/config.php";
+if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
+  header("location:login.php");
+}
+
+$stat = $pdo->prepare("SELECT * FROM posts WHERE id=" . $_GET['id']);
+$stat->execute();
+$result = $stat->fetch(PDO::FETCH_ASSOC);
+
+function user($author_id)
+{
+  global $pdo;
+  $ustat = $pdo->prepare("SELECT * FROM users WHERE id=$author_id");
+  $ustat->execute();
+  $uresult = $ustat->fetch(PDO::FETCH_ASSOC);
+  return $uresult['name'];
+}
+
+if ($_POST) {
+  $comment = $_POST['comment'];
+  $stat = $pdo->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:author_id,:post_id)");
+  $result = $stat->execute(
+    array(
+      ':content' => $comment,
+      ':author_id' => $_SESSION['user_id'],
+      ':post_id' => $_GET['id'],
+    ),
+  );
+  if ($result) {
+    header("location:blog_detail.php?id=" . $_GET['id']);
+  }
+}
+$cstat = $pdo->prepare("SELECT * FROM comments WHERE post_id=" . $_GET['id']);
+$cstat->execute();
+$cresult = $cstat->fetchAll();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Widgets</title>
+  <title>Blog Detail</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -28,115 +66,74 @@
           <!-- Box Comment -->
           <div class="card card-widget">
             <div class="card-header text-center">
-              <span class="username"><a href="#">I took this photo this morning. What do you guys think?</a></span>
+              <span class="username"><?php echo $result['title'] ?></span>
             </div>
             <!-- /.card-header -->
-            <div class="p-3">
-              <img class="img-fluid pad w-100" src="dist/img/photo2.png" alt="Photo">
+            <div class="p-3 d-flex justify-content-center">
+              <img class="img-fluid pad w-50" src="admin/images/<?php echo $result['image'] ?>" alt="Photo">
             </div>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
             <!-- post text -->
-            <p>Far far away, behind the word mountains, far from the
-              countries Vokalia and Consonantia, there live the blind
-              texts. Separated they live in Bookmarksgrove right at</p>
-
-            <p>the coast of the Semantics, a large language ocean.
-              A small river named Duden flows by their place and supplies
-              it with the necessary regelialia. It is a paradisematic
-              country, in which roasted parts of sentences fly into
-              your mouth.</p>
-
-            <!-- Attachment -->
-            <div class="attachment-block clearfix">
-              <img class="attachment-img" src="dist/img/photo1.png" alt="Attachment Image">
-
-              <div class="attachment-pushed">
-                <h4 class="attachment-heading"><a href="https://www.lipsum.com/">Lorem ipsum text generator</a></h4>
-
-                <div class="attachment-text">
-                  Description about the attachment can be placed here.
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry... <a href="#">more</a>
-                </div>
-                <!-- /.attachment-text -->
-              </div>
-              <!-- /.attachment-pushed -->
-            </div>
-            <!-- /.attachment-block -->
-
-            <!-- Social sharing buttons -->
-            <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
-            <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
-            <span class="float-right text-muted">45 likes - 2 comments</span>
+            <p>
+              <?php echo $result['content'] ?>
+            </p>
           </div>
+
           <!-- /.card-body -->
           <div class="card-footer card-comments">
-            <div class="card-comment">
-              <!-- User image -->
-              <img class="img-circle img-sm" src="dist/img/user3-128x128.jpg" alt="User Image">
-
-              <div class="comment-text">
-                <span class="username">
-                  Maria Gonzales
-                  <span class="text-muted float-right">8:03 PM Today</span>
-                </span><!-- /.username -->
-                It is a long established fact that a reader will be distracted
-                by the readable content of a page when looking at its layout.
-              </div>
-              <!-- /.comment-text -->
+            <div class="d-flex align-items-center justify-content-between">
+            <h3>Comments</h3>
+            <a href="index.php" class="btn btn-secondary">Back To Home Page</a>
             </div>
-            <!-- /.card-comment -->
-            <div class="card-comment">
-              <!-- User image -->
-              <img class="img-circle img-sm" src="dist/img/user5-128x128.jpg" alt="User Image">
-
-              <div class="comment-text">
-                <span class="username">
-                  Nora Havisham
-                  <span class="text-muted float-right">8:03 PM Today</span>
-                </span><!-- /.username -->
-                The point of using Lorem Ipsum is that it hrs a morer-less
-                normal distribution of letters, as opposed to using
-                'Content here, content here', making it look like readable English.
+            <hr>
+            <?php foreach ($cresult as $v) { ?>
+              <div class="card-comment d-flex">
+                <div class="comment-text" style="margin-left: 5px !important;">
+                  <span class="username">
+                    <?php echo user($v['author_id']) ?>
+                    <span class=" text-muted"><?php echo date("Y-m-d", strtotime($v['created_at'])) ?></span>
+                  </span><!-- /.username -->
+                  <?php echo $v['content'] ?>
+                </div>
+                <!-- /.comment-text -->
               </div>
-              <!-- /.comment-text -->
+            <?php } ?>
+            <!-- /.card-comment -->
+            <div class="card-footer">
+              <form action="" method="post">
+                <div class="img-push">
+                  <input type="text" name="comment" class="form-control form-control-sm" placeholder="Press enter to post comment">
+                </div>
+              </form>
             </div>
-            <!-- /.card-comment -->
+            <!-- /.card-footer -->
           </div>
-          <!-- /.card-footer -->
-          <div class="card-footer">
-            <form action="#" method="post">
-              <img class="img-fluid img-circle img-sm" src="dist/img/user4-128x128.jpg" alt="Alt Text">
-              <!-- .img-push is used to add margin to elements next to floating images -->
-              <div class="img-push">
-                <input type="text" class="form-control form-control-sm" placeholder="Press enter to post comment">
-              </div>
-            </form>
-          </div>
-          <!-- /.card-footer -->
+          <!-- /.card -->
         </div>
-        <!-- /.card -->
+        <!-- /.col -->
       </div>
-      <!-- /.col -->
+      <!-- /.content -->
+
+      <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+        <i class="fas fa-chevron-up"></i>
+      </a>
     </div>
-    <!-- /.content -->
+    <!-- /.content-wrapper -->
 
-    <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
-      <i class="fas fa-chevron-up"></i>
-    </a>
-  </div>
-  <!-- /.content-wrapper -->
+    <footer class="main-footer" style="margin-left: 0 !important;">
+      <div class="float-right d-none d-sm-inline">
+        <a href="logout.php" type="button" class="btn btn-secondary">Logout</a>
+      </div>
+      <strong>Copyright &copy; 2022 <a href="#">Ahkar Min Htut</a>.</strong> All rights reserved.
+    </footer>
 
-  <footer class="main-footer" style="margin-left: 0 !important;">
-    <strong>Copyright &copy; 2022 <a href="#">Ahkar Min Htut</a>.</strong> All rights reserved.
-  </footer>
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
   </div>
   <!-- ./wrapper -->
 

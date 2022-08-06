@@ -25,7 +25,12 @@
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li>
-          <form action="index.php" method="post">
+          <?php
+            $link = $_SERVER['PHP_SELF'];
+            $link_array = explode('/',$link);
+            $page = end($link_array);
+          ?>
+          <form action="<?php echo $page == 'index.php' ? 'index.php':'users.php' ?>" method="post">
             <div class="d-flex">
               <input type="search" name="search" class="form-control mr-2" id="" placeholder="Search">
               <button class="btn btn-default">
@@ -67,10 +72,18 @@
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
             <li class="nav-item">
-              <a href="index.php" class="nav-link">
+              <a href="index.php" class="nav-link <?php echo $page == 'index.php' ? 'active' : '' ?>">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
                   Blogs
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="users.php" class="nav-link <?php echo $page == 'users.php' ? 'active' : '' ?>">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Users
                 </p>
               </a>
             </li>
