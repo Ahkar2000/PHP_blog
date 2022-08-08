@@ -61,16 +61,16 @@ if ($_POST) {
                     <div class="card-body">
                         <form action="" method="post">
                             <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
-                            <input type="hidden" name="id" value="<?php echo $uresult['id'] ?>">
+                            <input type="hidden" name="id" value="<?php echo escape($uresult['id']) ?>">
                             <div class="form-group">
                                 <label for="" class="form-label">Name</label>
                                 <p class="text-danger"><?php echo empty($nameError) ?  '' : $nameError; ?></p>
-                                <input type="text" name="name" class="form-control" value="<?php echo $uresult['name'] ?>">
+                                <input type="text" name="name" class="form-control" value="<?php echo escape($uresult['name']) ?>">
                             </div>
                             <div class="form-group">
                                 <label for="" class="form-label">Email</label>
                                 <p class="text-danger"><?php echo empty($emailError) ?  '' : $emailError; ?></p>
-                                <input type="email" class="form-control" name="email" value="<?php echo $uresult['email'] ?>">
+                                <input type="email" class="form-control" name="email" value="<?php echo escape($uresult['email']) ?>">
                             </div>
                             <div class="form-group">
                                 <label for="" class="form-label">Password</label>

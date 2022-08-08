@@ -61,16 +61,16 @@ $result = $stat->fetchAll();
                     <div class="card-body">
                         <form action="" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
-                            <input type="hidden" name="id" value="<?php echo $result[0]['id'] ?>" id="">
+                            <input type="hidden" name="id" value="<?php echo escape($result[0]['id']) ?>" id="">
                             <div class="form-group">
                                 <label for="" class="form-label">Title</label>
                                 <p class="text-danger"><?php echo empty($titleError) ?  '': $titleError; ?></p>
-                                <input type="text" name="title" class="form-control" id="" value="<?php echo $result[0]['title'] ?>">
+                                <input type="text" name="title" class="form-control" id="" value="<?php echo escape($result[0]['title']) ?>">
                             </div>
                             <div class="form-group">
                                 <label for="" class="form-label">Content</label>
                                 <p class="text-danger"><?php echo empty($contentError) ?  '': $contentError; ?></p>
-                                <textarea name="content" cols="30" rows="10" class="form-control"><?php echo $result[0]['content']; ?></textarea>
+                                <textarea name="content" cols="30" rows="10" class="form-control"><?php echo escape($result[0]['content']); ?></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="" class="form-label">Image</label>

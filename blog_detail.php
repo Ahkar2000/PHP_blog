@@ -71,7 +71,7 @@ $cresult = $cstat->fetchAll();
           <!-- Box Comment -->
           <div class="card card-widget">
             <div class="card-header text-center">
-              <span class="username"><?php echo $result['title'] ?></span>
+              <span class="username"><?php echo escape($result['title']) ?></span>
             </div>
             <!-- /.card-header -->
             <div class="p-3 d-flex justify-content-center">
@@ -82,7 +82,7 @@ $cresult = $cstat->fetchAll();
           <div class="card-body">
             <!-- post text -->
             <p>
-              <?php echo $result['content'] ?>
+              <?php echo escape($result['content']) ?>
             </p>
           </div>
 
@@ -98,7 +98,7 @@ $cresult = $cstat->fetchAll();
                 <div class="comment-text" style="margin-left: 5px !important;">
                   <span class="username">
                     <?php echo user($v['author_id']) ?>
-                    <span class=" text-muted"><?php echo date("Y-m-d", strtotime($v['created_at'])) ?></span>
+                    <span class=" text-muted"><?php echo date("Y-m-d", escape(strtotime($v['created_at']))) ?></span>
                   </span><!-- /.username -->
                   <?php echo $v['content'] ?>
                 </div>

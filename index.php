@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "config/config.php";
+require "config/common.php";
 if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header("location:login.php");
 }
@@ -59,14 +60,14 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                         <!-- Box Comment -->
                         <div class="card card-widget ml-3">
                             <div class="card-header text-center">
-                                <span class="username"><a href="blog_detail.php?id=<?php echo $value['id'] ?>"><?php echo $value['title'] ?></a></span>
+                                <span class="username"><a href="blog_detail.php?id=<?php echo escape($value['id']) ?>"><?php echo $value['title'] ?></a></span>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body d-flex flex-column align-items-center">
                                 <img class="img-fluid pad" style="height: 250px !important;" src="admin/images/<?php echo $value['image'] ?>" alt="Photo">
                                 <hr>
                                 <p>
-                                    <?php echo substr($value['content'], 0, 50) . "..."; ?>
+                                    <?php echo escape(substr($value['content'], 0, 50) . "..."); ?>
                                 </p>
                             </div>
                         </div>
