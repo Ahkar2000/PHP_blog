@@ -19,17 +19,21 @@ function user($author_id)
 }
 
 if ($_POST) {
-  $comment = $_POST['comment'];
-  $stat = $pdo->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:author_id,:post_id)");
-  $result = $stat->execute(
-    array(
-      ':content' => $comment,
-      ':author_id' => $_SESSION['user_id'],
-      ':post_id' => $_GET['id'],
-    ),
-  );
-  if ($result) {
-    header("location:blog_detail.php?id=" . $_GET['id']);
+  if (empty($_POST['comment'])) {
+    $comdError = 'Comment connot be empty!';
+  } else {
+    $comment = $_POST['comment'];
+    $stat = $pdo->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:author_id,:post_id)");
+    $result = $stat->execute(
+      array(
+        ':content' => $comment,
+        ':author_id' => $_SESSION['user_id'],
+        ':post_id' => $_GET['id'],
+      ),
+    );
+    if ($result) {
+      header("location:blog_detail.php?id=" . $_GET['id']);
+    }
   }
 }
 $cstat = $pdo->prepare("SELECT * FROM comments WHERE post_id=" . $_GET['id']);
@@ -84,8 +88,8 @@ $cresult = $cstat->fetchAll();
           <!-- /.card-body -->
           <div class="card-footer card-comments">
             <div class="d-flex align-items-center justify-content-between">
-            <h3>Comments</h3>
-            <a href="index.php" class="btn btn-secondary">Back To Home Page</a>
+              <h3>Comments</h3>
+              <a href="index.php" class="btn btn-secondary">Back To Home Page</a>
             </div>
             <hr>
             <?php foreach ($cresult as $v) { ?>
@@ -103,6 +107,7 @@ $cresult = $cstat->fetchAll();
             <!-- /.card-comment -->
             <div class="card-footer">
               <form action="" method="post">
+              <p class="text-danger mb-0"><?php echo empty($comdError) ?  '': $comdError; ?></p>
                 <div class="img-push">
                   <input type="text" name="comment" class="form-control form-control-sm" placeholder="Press enter to post comment">
                 </div>

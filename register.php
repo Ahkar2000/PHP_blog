@@ -2,34 +2,48 @@
 session_start();
 require "config/config.php";
 if ($_POST) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $cpassword = $_POST['cpassword'];
+    if (empty($_POST['name'] || empty($_POST['email'])) || empty($_POST['password'])) {
+        if (empty($_POST['name'])) {
+            $nameError = 'Name cannot be empty!';
+        }
+        if (empty($_POST['email'])) {
+            $emailError = 'Email cannot be empty!';
+        }
+        if (empty($_POST['password'])) {
+            $passwordError = 'Password cannot be empty!';
+        }
+    } elseif (!empty($_POST['password']) && strlen($_POST['password']) < 4) {
+        $passwordError = 'Password should be at least 4 characters!';
+    }else {
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $cpassword = $_POST['cpassword'];
 
-    $stat = $pdo->prepare("SELECT * FROM users WHERE email=:email");
-    $stat->bindValue(':email', $email);
-    $stat->execute();
-    $user = $stat->fetch(PDO::FETCH_ASSOC);
+        $stat = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+        $stat->bindValue(':email', $email);
+        $stat->execute();
+        $user = $stat->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
-        echo "<script>alert('Email has already used!')</script>";
-    } else {
-        if ($password == $cpassword) {
-            $stat = $pdo->prepare("INSERT INTO users(name,email,password,role) VALUES (:name,:email,:password,:role)");
-            $result = $stat->execute(
-                array(
-                    ':name' => $name,
-                    ':email' => $email,
-                    ':password' => $password,
-                    ':role' => 0
-                ),
-            );
-            if ($result) {
-                echo "<script>alert('Successfully Registered! You can now login.');window.location.href='login.php'</script>";
+        if ($user) {
+            echo "<script>alert('Email has already used!')</script>";
+        } else {
+            if ($password == $cpassword) {
+                $stat = $pdo->prepare("INSERT INTO users(name,email,password,role) VALUES (:name,:email,:password,:role)");
+                $result = $stat->execute(
+                    array(
+                        ':name' => $name,
+                        ':email' => $email,
+                        ':password' => $password,
+                        ':role' => 0
+                    ),
+                );
+                if ($result) {
+                    echo "<script>alert('Successfully Registered! You can now login.');window.location.href='login.php'</script>";
+                }
+            } else {
+                $cpasswordError = 'Passwords do not match!';
             }
-        }else{
-            echo "<script>alert('Password did not match!')</script>";
         }
     }
 }
@@ -63,6 +77,7 @@ if ($_POST) {
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Register New Accounnt</p>
                 <form action="register.php" method="post">
+                <p class="text-danger mb-0"><?php echo empty($nameError) ?  '': $nameError; ?></p>
                     <div class="input-group mb-3">
                         <input type="text" name="name" class="form-control" placeholder="Name">
                         <div class="input-group-append">
@@ -71,6 +86,7 @@ if ($_POST) {
                             </div>
                         </div>
                     </div>
+                    <p class="text-danger mb-0"><?php echo empty($emailError) ?  '': $emailError; ?></p>
                     <div class="input-group mb-3">
                         <input type="email" name="email" class="form-control" placeholder="Email">
                         <div class="input-group-append">
@@ -79,6 +95,7 @@ if ($_POST) {
                             </div>
                         </div>
                     </div>
+                    <p class="text-danger mb-0"><?php echo empty($passwordError) ?  '': $passwordError; ?></p>
                     <div class="input-group mb-3">
                         <input type="password" name="password" class="form-control" placeholder="Password">
                         <div class="input-group-append">
@@ -87,6 +104,7 @@ if ($_POST) {
                             </div>
                         </div>
                     </div>
+                    <p class="text-danger mb-0"><?php echo empty($cpasswordError) ?  '': $cpasswordError; ?></p>
                     <div class="input-group mb-3">
                         <input type="password" name="cpassword" class="form-control" placeholder="Confirm Password">
                         <div class="input-group-append">
