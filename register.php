@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "config/config.php";
+require "config/common.php";
 if ($_POST) {
     if (empty($_POST['name'] || empty($_POST['email'])) || empty($_POST['password'])) {
         if (empty($_POST['name'])) {
@@ -78,6 +79,7 @@ if ($_POST) {
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Register New Accounnt</p>
                 <form action="register.php" method="post">
+                <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
                 <p class="text-danger mb-0"><?php echo empty($nameError) ?  '': $nameError; ?></p>
                     <div class="input-group mb-3">
                         <input type="text" name="name" class="form-control" placeholder="Name">

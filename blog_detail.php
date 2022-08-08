@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "config/config.php";
+require "config/common.php";
 if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
   header("location:login.php");
 }
@@ -107,6 +108,7 @@ $cresult = $cstat->fetchAll();
             <!-- /.card-comment -->
             <div class="card-footer">
               <form action="" method="post">
+              <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
               <p class="text-danger mb-0"><?php echo empty($comdError) ?  '': $comdError; ?></p>
                 <div class="img-push">
                   <input type="text" name="comment" class="form-control form-control-sm" placeholder="Press enter to post comment">
