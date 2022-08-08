@@ -29,6 +29,7 @@ if ($_POST) {
             echo "<script>alert('Email has already used!')</script>";
         } else {
             if ($password == $cpassword) {
+                $password = password_hash($_POST['password'],PASSWORD_DEFAULT);
                 $stat = $pdo->prepare("INSERT INTO users(name,email,password,role) VALUES (:name,:email,:password,:role)");
                 $result = $stat->execute(
                     array(

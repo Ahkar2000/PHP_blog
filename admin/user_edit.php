@@ -33,7 +33,7 @@ if ($_POST) {
             echo "<script>alert('Email has already used!')</script>";
         } else {
             if ($_POST['password']) {
-                $password = $_POST['password'];
+                $password = password_hash($_POST['password'],PASSWORD_DEFAULT);
                 $stat = $pdo->prepare("UPDATE users SET name='$name',email='$email',password='$password',role='$role' WHERE id='$id'");
                 $result = $stat->execute();
             } else {
