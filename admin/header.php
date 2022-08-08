@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,6 +30,7 @@
             $page = end($link_array);
           ?>
           <form action="<?php echo $page == 'index.php' ? 'index.php':'users.php' ?>" method="post">
+          <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
             <div class="d-flex">
               <input type="search" name="search" class="form-control mr-2" id="" placeholder="Search">
               <button class="btn btn-default">
